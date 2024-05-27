@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="content(entity)">
+    <div class="main-container">
+        <h1 class="cart-title">
+            Shopping Bag
+        </h1>
+        <input type="hidden" th:value="${entity.id}" id="order-id">
+        <div class="cart-item" th:id="${item.id}" th:each="item : ${entity.basketOrderedProductDTO}">
+            <div class="product-info-cart">
+                <a th:href="'/item?id=' + ${item.id}"><img th:src="@{${item.image}}" alt="Product Image" class="product-image-cart"></a>
+                <div class="cart-description">
+                    <a th:href="'/item?id=' + ${item.id}"><p class="product-name" th:text="${item.name}"></p></a>
+                    <div class="decoration-text">
+                        <p class="price-cart" th:id="'price-' + ${item.id}" th:text="${item.price} + '€'"></p>
+                        <p class="quantity-text">Quantity: <span th:text="${item.amount}" class="quantity-text"
+                                                                 th:id="'amount-' + ${item.id}"></span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="quantity-controls">
+                <button class="quantity-btn minus" onclick="startTimerAndUpdateAmount(this.getAttribute('data-id'))"
+                        th:data-id="${item.id}">-
+                </button>
+                <input type="number" class="quantity-count" th:id="'counter-' + ${item.id}"
+                       onchange="updateAmountAndCommonPrice(this.getAttribute('data-id'))" th:data-id="${item.id}"
+                       th:value="${item.amount}">
+                <button class="quantity-btn plus" onclick="startTimerAndUpdateAmount(this.getAttribute('data-id'))"
+                        th:data-id="${item.id}">+
+                </button>
+            </div>
+        </div>
+        <div class="cart-summary">
+            <p class="total-label">Total:</p>
+            <p class="total-price" th:id="'common-price'" th:text="${entity.commonPrice} + '€'"></p>
+        </div>
+        <div class="cart-checkout-btn">
+            <button class="checkout-btn"><a th:href="'/order/make-order?id=' + ${entity.id}">Proceed to Checkout</a></button>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script>
+            let orderId = document.getElementById('order-id').value;
+            let timer;
+
+            function startTimerAndUpdateAmount(id) {
+                clearTimeout(timer);
+
+                timer = setTimeout(function () {
+                    updateAmountAndCommonPrice(id);
+                }, 500);
+            }
+
+            function updateAmountAndCommonPrice(id) {
+                let lastAmount = document.getElementById('amount-' + id).textContent;
+                let price = document.getElementById('price-' + id).textContent.replace('€', '');
+                let commonPrice = document.getElementById('common-price').textContent.replace('€', '');
+                document.getElementById('amount-' + id).textContent = document.getElementById('counter-' + id).value;
+                commonPrice -= (lastAmount * price);
+                commonPrice += (document.getElementById('amount-' + id).textContent * price);
+                commonPrice = commonPrice.toFixed(2);
+                document.getElementById('common-price').textContent = commonPrice + '€';
+
+                axios.post('/order/update-item', {
+
+                    orderId: orderId,
+                    id: id,
+                    amount: document.getElementById('amount-' + id).textContent,
+                    newCommonPrice: commonPrice,
+
+                })
+                    .then(function () {
+                        let s = document.getElementById('amount-' + id).textContent;
+                        if (s === '0') {
+                            let cartItem = document.getElementById(id);
+                            if (cartItem) {
+                                cartItem.remove();
+                            }
+                        }
+                    })
+                    .catch(function (error) {
+                        console.error(error);
+                    });
+            }
+        </script>
+    </div>
+</div>
+</body>
+</html>

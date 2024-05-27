@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="content(entity)">
+    <div class="main-container">
+        <h1 class="cart-title">
+            Your Orders
+        </h1>
+
+        <h1 th:if="${entity == null}" style="text-align: center; font-size: 24px;">List is empty</h1>
+        <div class="cart-item"  th:each="item : ${entity}">
+            <div class="product-info-cart">
+                <div class="order-history-img-container">
+                    <img src="/img/order_history.png" alt="Product Image" class="order-history-img">
+                </div>
+                <div class="cart-description">
+                    <p class="product-name">Order #<span th:text="${item.id}"></span></p>
+                    <div class="decoration-text">
+                        <p th:unless="${item.arrivingTime == null}" class="price-cart order-history-description">Delivered <span th:text="${item.arrivingTime.toLocalDate()}"></span></p>
+                        <p th:if="${item.arrivingTime == null}" class="price-cart order-history-description">Arrival time unknown</p>
+                    </div>
+                </div>
+            </div>
+            <div class="quantity-controls">
+                <a th:href="'/order/order-details?id=' + ${item.id}"><img src="/img/right_arrow.png" alt="arrow-photo" class="order-arrow"></a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

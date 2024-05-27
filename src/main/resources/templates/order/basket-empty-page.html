@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="content(entity)">
+    <div class="main-container">
+        <div class="center-content">
+            <img src="/img/empty_cart_web.png" alt="Your Image" class="cart-picture">
+            <h2 class="web-title-cart">Your Shopping Cart is Empty</h2>
+            <div class="text">
+                <p>You might like these items</p>
+            </div>
+            <button class="resend-btn" onclick="window.location.href='/'">Continue Shopping</button>
+        </div>
+        <p class="all-products">Recommend for you</p>
+        <div class="related-products">
+            <div  th:each="item : ${entity}" class="product-card">
+                <img th:src="@{${item.image}}" alt="Product Image">
+                <p th:text="'Brand: ' + ${item.brand}"></p>
+                <p th:text="${item.name}"></p>
+                <div>
+                    <p class="price" th:text="${item.salePrice} + '€'"></p>
+                    <a th:href="@{/item(id=${item.id})}" class="shop-now-button">View Item</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

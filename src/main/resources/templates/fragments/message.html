@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="content(entity)">
+    <div class="main-container">
+        <div class="center-content">
+            <!--        Mobile Version-->
+            <h2 th:text="${entity.title}" class="mobile-title"></h2>
+            <!--        Web Version-->
+            <img src="/img/successful_registration_picture.png" alt="Your Image" class="web-picture">
+            <!--        Mobile Version-->
+            <img src="/img/successful_registration_mobile_picture.png" alt="Your Image" class="mobile-picture">
+            <!--        Web Version-->
+            <h2  th:text="${entity.title}" class="web-title"></h2>
+            <div class="text">
+                <!--            Web Version-->
+                <p class="web-text" th:text="${entity.message}"></p>
+                <!--            Mobile Version-->
+                <p class="mobile-text" th:text="${entity.message}"></p>
+            </div>
+            <button class="resend-btn" th:onclick="|window.location.href='/'|">Go to main</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="content(entity)">
+    <div class="main-container">
+<!--        <form id="order-panel-form" th:action="@{/order/orders-panel}" method="get">-->
+<!--            <div class="header">-->
+<!--                <h1>Orders</h1>-->
+<!--                <h2>Filters</h2>-->
+<!--                <div class="search-container">-->
+<!--                    <label for="search">Search</label>-->
+<!--                    <input type="number" id="search" name="id" th:value="${entity.filter.id}"-->
+<!--                           placeholder="Type here to search...">-->
+<!--                </div>-->
+<!--                <div class="subject-container">-->
+<!--                    <label for="status">Subject</label>-->
+<!--                    <select class="subject-filter" name="status" id="status">-->
+<!--                        <option th:each="type : ${T(com.web.shop.qogita.order.OrderStatus).values()}"-->
+<!--                                th:value="${type}" th:text="${type.getDisplayName()}"-->
+<!--                                th:selected="${type == entity.filter.status}"-->
+<!--                        ></option>-->
+<!--                    </select>-->
+<!--                </div>-->
+<!--                <button class="filter-btn" onclick="saveFilterOptions()" type="button">Filter questions</button>-->
+<!--            </div>-->
+<!--        </form>-->
+
+        <div class="table-container">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Status</th>
+                    <th>Email</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${entity.orders}">
+                    <td th:text=" '#' + ${item.id}"></td>
+                    <td class="subject-text"><p th:text="${item.status}"></p></td>
+                    <td th:text="${item.account.email}"></td>
+                    <td><a th:href="@{'/admin/order/order-processing?id=' + ${item.id}}" class="view-button">View</a></td>
+                </tr>
+                </tbody>
+
+            </table>
+        </div>
+
+        <div class="pagination" th:if="${entity.orders.totalPages > 1}">
+            <a th:href="@{'/order/orders-panel?page=' + ${entity.orders.number - 1}}" id="left-arrow"
+               th:if="${entity.orders.hasPrevious()}">
+                <img src="/img/left_arrow.png" alt="left-arrow"/>
+            </a>
+            <a href="#" th:text="${entity.orders.number + 1}" class="active"></a>
+            <a th:href="@{'/order/orders-panel?page=' + ${entity.orders.number + 1}}" id="right-arrow"
+               th:if="${entity.orders.hasNext()}">
+                <img src="/img/right_arrow.png" alt="right-arrow"/>
+            </a>
+        </div>
+    </div>
+    <script>
+        let searchIdInput = document.getElementById("search");
+        let statusInput = document.getElementById("status");
+        let left_arrow = document.getElementById("left-arrow");
+        let right_arrow = document.getElementById("right-arrow");
+
+        function saveFilterOptions() {
+            localStorage.setItem('order-id', searchIdInput.value);
+            localStorage.setItem("order-status", statusInput.value);
+            document.querySelector("#order-panel-form").submit();
+        }
+
+        document.addEventListener("DOMContentLoaded", function formFilterOptions() {
+            let id = localStorage.getItem("order-id");
+            let status = localStorage.getItem("order-status");
+            let params = '';
+            if (id !== null)
+                params += '&id=' + id;
+            searchIdInput.value = id;
+            if(status !== null) {
+                params += "&subject=" + status;
+                statusInput.value = status;
+            }
+
+            if(left_arrow)
+                left_arrow.href += params;
+            if(right_arrow)
+                right_arrow.href += params;
+        })
+    </script>
+</div>
+</body>
+</html>
+

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${title}"></title>
+    <link rel="stylesheet" href="/css/index.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+          rel="stylesheet">
+    <script src="/js/index.js" defer></script>
+</head>
+<body>
+
+<th:block th:if="${content == 'showcase-page'}">
+    <div th:replace="~{fragments/navbar :: content()}"></div>
+</th:block>
+<th:block th:unless="${content == 'showcase-page'}">
+    <div th:replace="~{fragments/navbar-item :: content()}"></div>
+</th:block>
+
+
+<th:block th:switch="${content}">
+    <th:block th:case="'showcase-page'">
+        <main th:replace="~{product/showcase-page:: content(${entity})}"></main>
+    </th:block>
+    <th:block th:case="'item-page'">
+        <main th:replace="~{product/item :: content(entity=${entity}, randoms=${randoms})}"></main>
+    </th:block>
+    <th:block th:case="'login-page'">
+        <th:block th:replace="~{account/login-page :: content(${entity})}"></th:block>
+    </th:block>
+    <th:block th:case="'registration-page'">
+        <th:block th:replace="~{account/registration-page :: content(${entity})}"></th:block>
+    </th:block>
+    <th:block th:case="'basket-empty-page'">
+        <th:block th:replace="~{order/basket-empty-page :: content(${entity})}"></th:block>
+    </th:block>
+    <th:block th:case="'basket-page'">
+        <th:block th:replace="~{order/basket-page :: content(${entity})}"></th:block>
+    </th:block>
+    <th:block th:case="'order-history-page'">
+        <th:block th:replace="~{order/order-history-page :: content(${entity})}"></th:block>
+    </th:block>
+    <th:block th:case="'order-details-page'">
+        <th:block th:replace="~{order/order-details-page :: content(${entity})}"></th:block>
+    </th:block>
+
+    <th:block th:case="'orders-panel-page'">
+        <th:block th:replace="~{order/orders-panel-page :: content(${entity})}"></th:block>
+    </th:block>
+    <th:block th:case="'order-processing-page'">
+        <div th:replace="~{order/order-processing-page :: content(${entity}, ${update})}"></div>
+    </th:block>
+
+    <th:block th:case="'message-page'">
+        <th:block th:replace="~{fragments/message :: content(${entity})}"></th:block>
+    </th:block>
+</th:block>
+<div class="footer"></div>
+<th:block th:switch="${content}">
+    <th:block th:case="'showcase-page'">
+        <script src="/js/showcase.js" defer></script>
+    </th:block>
+</th:block>
+<script>
+    let searchLineInput = document.getElementById("search-line");
+    let searchInputMobile = document.getElementById("search-input-mobile");
+    let left_showcase_arrow = document.getElementById("left-showcase-arrow");
+    let right_showcase_arrow = document.getElementById("right-showcase-arrow");
+    let filterSearchLineInput = document.getElementById("filterSearchLine");
+
+    function search() {
+        localStorage.setItem('search-line', searchLineInput.value);
+        document.querySelector("#search-input-form").submit();
+    }
+
+    function searchLineUpdate() {
+        if (filterSearchInput !== null)
+            filterSearchInput.value = searchLineInput.value;
+    }
+
+    function searchLineMobileUpdate() {
+        if (filterSearchInput !== null)
+            filterSearchInput.value = searchInputMobile.value;
+    }
+
+    document.addEventListener("DOMContentLoaded", function updateLocalStorage() {
+        let queryString = window.location.search;
+
+        if (queryString === "")
+            localStorage.clear();
+    });
+
+    document.addEventListener("DOMContentLoaded", function searchItem() {
+        let searchLine = localStorage.getItem("search-line");
+        let params_search = '';
+        if (searchLine !== null)
+            params_search += '&searchLine=' + searchLine;
+        if (filterSearchLineInput !== null)
+            filterSearchLineInput.value = searchLine;
+
+        searchLineInput.value = searchLine;
+        searchInputMobile.value = searchLine
+
+        if (left_showcase_arrow)
+            left_showcase_arrow.href += params_search;
+        if (right_showcase_arrow)
+            right_showcase_arrow.href += params_search;
+    });
+
+    function handleKeyPress(event) {
+        if (event.keyCode === 13) {
+            filterShowcase();
+        }
+    }
+</script>
+</body>
+</html>

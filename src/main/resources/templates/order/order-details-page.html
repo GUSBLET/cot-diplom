@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="content(entity)">
+    <div class="main-container">
+        <h1 class="cart-title">
+            Order Details
+        </h1>
+        <h3>
+            Order #<span th:text="${entity.id}"></span>
+        </h3>
+        <div class="cart-item">
+            <div class="product-info-cart">
+                <div class="order-history-img-container">
+                    <img src="/img/order_history.png" alt="Product Image" class="order-history-img">
+                </div>
+                <div class="cart-description">
+                    <p class="product-name" th:text="${entity.status.getDisplayName()}"></p>
+                    <div class="decoration-text">
+                        <p th:unless="${entity.arrivingTime == null}"  class="price-cart order-history-description">Arrives <span th:text="${entity.arrivingTime.toLocalDate()}"></span></p>
+                        <p th:if="${entity.arrivingTime == null}"  class="price-cart order-history-description">Arrival time unknown</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h1 class="cart-title">
+            Items (<span th:text="${entity.products.size()}"></span>)
+        </h1>
+        <div class="cart-item" th:each="item : ${entity.products}">
+            <div class="product-info-cart">
+                <a th:href="'/item?id=' + ${item.productId}"><img th:src="${item.image}" alt="Product Image" class="product-image-order-details"></a>
+                <div class="cart-description">
+                    <p class="product-name"><a th:href="'/item?id=' + ${item.productId}" th:text="${item.name}"></a></p>
+                    <div class="decoration-text">
+                        <p class="price-cart" th:text="${item.price} + '€'"></p>
+                        <p class="quantity-text">Quantity: <span th:text="${item.amount}"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h1 class="cart-title">
+            Order Summary
+        </h1>
+        <div class="cart-summary">
+            <p class="total-order-details">Total price:</p>
+            <p class="total-price" th:text="${entity.commonPrice} + '€'"></p>
+        </div>
+        <div class="cart-summary">
+            <p class="total-order-details">Final price:</p>
+            <p th:if="${entity.finalPrice == null}" class="total-price">Our workers calculate the price</p>
+            <p th:unless="${entity.finalPrice == null}" class="total-price" th:text="${entity.finalPrice} + '€'"></p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

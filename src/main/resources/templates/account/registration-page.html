@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="content(entity)">
+    <div class="main-container">
+        <div class="sign-in-container">
+            <h2>Create user</h2>
+            <form th:action="@{/account/admin/register}" th:object="${entity}" method="post">
+
+                <div class="input-container">
+                    <span style="color:red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+                    <label for="email">Email</label>
+                    <input type="text" id="email" name="email"  placeholder="Enter your email" class="input-field" required maxlength="150">
+                </div>
+                <div class="input-container">
+                    <label for="authority">Authority</label>
+                    <select class="role-for-registration input-field" name="authority" id="authority" required>
+                        <option value="">Select a authority</option>
+                        <option th:each="type : ${T(com.web.shop.qogita.role.Authority).values()}"
+                                th:value="${type}" th:text="${type.getDisplayName()}"></option>
+                    </select>
+                </div>
+                <div class="input-container">
+                    <span style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+                    <label for="password">Password of new user</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" class="input-field" required>
+                </div>
+                <button class="sign-in-btn" type="submit">Create</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

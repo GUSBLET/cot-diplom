@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="content(entity)">
+    <div class="main-container main-container-catalog">
+        <div class="catalog-grid-container">
+            <div class="catalog-left-side">
+                <div class="filter-section">
+<!--                    <h2 class="all-products">Filters</h2>-->
+                    <div class="filter">
+                        <form action="/" id="filter-showcase-form" method="get">
+                            <input type="hidden" name="searchLine" id="filterSearchLine">
+<!--                            <input type="hidden" name="page" id="current-page-pagination">-->
+<!--                            <div class="form-group-filter">-->
+<!--                                <label for="min-price">Min €</label>-->
+<!--                                <input type="number" id="min-price" min="1" name="minPrice" class="min-max-price">-->
+<!--                            </div>-->
+<!--                            <div class="form-group-filter">-->
+<!--                                <label for="max-price">Max €</label>-->
+<!--                                <input type="number" id="max-price" min="1" name="maxPrice" class="min-max-price">-->
+<!--                            </div>-->
+<!--                            <div class="form-group-filter">-->
+<!--                                <label for="brand">Brand</label>-->
+<!--                                <input type="text" id="brand" min="1" name="brand" class="min-max-price">-->
+<!--                            </div>-->
+<!--                            <div class="form-group-filter">-->
+<!--                                <label>Sort by Price</label>-->
+<!--                                <div class="checkbox-group">-->
+<!--                                    <label for="price-desc" class="checkbox-label">-->
+<!--                                        <input type="radio" id="price-desc" name="priceSort" value="DESC">-->
+<!--                                        High to Low-->
+<!--                                    </label>-->
+<!--                                    <label for="price-asc" class="checkbox-label">-->
+<!--                                        <input type="radio" id="price-asc" name="priceSort" value="ASC">-->
+<!--                                        Low to High-->
+<!--                                    </label>-->
+<!--                                    <label for="price-none" class="checkbox-label">-->
+<!--                                        <input type="radio" id="price-none" name="priceSort" value="" checked>-->
+<!--                                        None-->
+<!--                                    </label>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="form-group-filter">-->
+<!--                                <button class="filter-submit" onclick="filterShowcase()" type="button">Apply</button>-->
+<!--                            </div>-->
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="catalog-right-side">
+                <div class="filter-mobile">
+                    <div class="burger-menu" id="burgerMenu">
+                        <div class="navbar-item-burger">
+                            <img src="/img/back_arrow.png" onclick="closeBurgerFilter()" id="close-burger-menu-mobile" alt="Back" class="back-arrow">
+                            <script>
+                                function closeBurgerFilter(){
+                                    document.getElementById('burgerMenu').style.display = 'none';
+                                    document.body.classList.remove('burger-menu-open');
+                                    document.body.style.overflow = 'auto';
+                                }
+                            </script>
+<!--                            <div class="logo">-->
+<!--                                <div class="logo-img-text">-->
+<!--                                    Filter-->
+<!--                                </div>-->
+<!--                            </div>-->
+                        </div>
+<!--                        <div class="sort-by-container">-->
+<!--                            <div class="sort-by">Sort by</div>-->
+<!--                            <div class="checkbox-group">-->
+<!--                                <div class="form-group-filter">-->
+<!--                                    <div class="checkbox-group">-->
+<!--                                        <label for="price-desc-mobile" class="checkbox-label">-->
+<!--                                            <input type="radio" id="price-desc-mobile"-->
+<!--                                                   onchange="updateMobileChecked('price-desc')" name="price-sort-mobile"-->
+<!--                                                   value="price-asc">-->
+<!--                                            High to Low-->
+<!--                                        </label>-->
+<!--                                        <label for="price-asc-mobile" class="checkbox-label">-->
+<!--                                            <input type="radio" id="price-asc-mobile"-->
+<!--                                                   onchange="updateMobileChecked('price-asc')" name="price-sort-mobile"-->
+<!--                                                   value="price-desc">-->
+<!--                                            Low to High-->
+<!--                                        </label>-->
+<!--                                        <label for="price-none-mobile" class="checkbox-label">-->
+<!--                                            <input type="radio" id="price-none-mobile" onchange="updateMobileChecked('price-none')" name="price-sort-mobile" value="">-->
+<!--                                            None-->
+<!--                                        </label>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="sort-by">Price range</div>-->
+<!--                        </div>-->
+<!--                        <div class="price-range">-->
+<!--                            <div class="min-max-mobile">-->
+<!--                                <input type="number" id="min-price-mobile"-->
+<!--                                       oninput="updateMobileInput('min-price', this)" name="min-price"-->
+<!--                                       placeholder="Min">-->
+<!--                                <input type="number" id="max-price-mobile"-->
+<!--                                       oninput="updateMobileInput('max-price', this)" name="max-price"-->
+<!--                                       placeholder="Max">-->
+<!--                                <input type="text" id="brand-mobile"-->
+<!--                                       oninput="updateMobileInput('brand', this)" name="brand"-->
+<!--                                       placeholder="Brand">-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="apply-button-container">-->
+<!--                            <button class="apply-button" onclick="filterShowcase()">Apply</button>-->
+<!--                        </div>-->
+                    </div>
+                </div>
+                <div class="product-container">
+                    <div class="product-card" th:each="item : ${entity.content}">
+                        <a th:href="@{/item(id=${item.id})}">
+                            <img th:src="@{${item.imageUrl}}" alt="Product Image">
+                        </a>
+                        <p th:text="'Brand: ' + ${item.brandName}"></p>
+                        <p th:text="${item.name}"></p>
+                        <div>
+                            <p class="price" th:text="${item.price} + '€'"></p>
+<!--                            <a th:href="@{/item(id=${item.id})}" class="shop-now-button">View Item</a>-->
+                        </div>
+                    </div>
+                </div>
+
+                <h1 th:if="${entity.empty}" style="text-align: center; font-size: 24px;">List is empty</h1>
+            </div>
+        </div>
+        <div class="pagination" th:if="${entity.totalPages > 1}">
+            <form>
+                <div class="page-number">
+                    <a href="/?page=0" id="first-page"><input type="number" step="1" min="1" id="num_count-first" name="quantity" value="1" title="Кол." class="input-text qty text page-number" size="4" readonly/></a>
+                </div>
+                <a th:href="@{'/?page=' + ${entity.number - 1}}" id="left-showcase-arrow"
+                   th:if="${entity.hasPrevious()}">
+                    <img class="arrow-pagination" src="/img/left_arrow.png" alt="left-arrow"/>
+                </a>
+                <a th:unless="${entity.hasPrevious()}" href="#">
+                    <img class="arrow-pagination" src="/img/left_arrow.png" alt="left-arrow"/>
+                </a>
+                <input type="number" step="1" th:value="${entity.number + 1}" min="1" id="num_count" name="page"
+                       value="1" title="Кол." onchange="sendPagination()" class="input-text qty text" size="4"/>
+                <a th:unless="${entity.hasNext()}" href="#">
+                    <img class="arrow-pagination" src="/img/right_arrow.png" alt="right-arrow"/>
+                </a>
+                <a th:href="@{'/?page=' + ${entity.number + 1}}" id="right-showcase-arrow" th:if="${entity.hasNext()}">
+                    <img class="arrow-pagination" src="/img/right_arrow.png" alt="right-arrow"/>
+                </a>
+                <div class="page-number">
+                    <a th:href="'/?page=' + ${entity.getTotalElements() / entity.getSize()}" id="last-page"><input type="number" step="1" min="1" id="num_count-last" name="quantity" th:value="${entity.getTotalElements() / entity.getSize() + 1}" title="Кол." class="input-text qty text" size="4" readonly/></a>
+                </div>
+            </form>
+        </div>
+        <div class="total-pages">Total items <span id="total-pages"
+                                                   th:text="${entity.getTotalElements()}"></span></div>
+        <div class="total-pages-mobile-container">
+            <div class="total-pages-mobile">Total items <span id="total-pages-mobile"
+                                                              th:text="${entity.getTotalElements()}"></span>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

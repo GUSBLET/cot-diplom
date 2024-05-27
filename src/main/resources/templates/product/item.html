@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="content(entity, randoms)">
+
+    <div class="main-container">
+        <div class="breadcrumbs">
+            <span><a href="/">Home</a> /</span>
+            <p th:text="${entity.name}"></p>
+        </div>
+        <div class="product-details">
+            <div class="product-image">
+                <img th:src="@{${entity.image}}" alt="Product Image">
+            </div>
+            <div class="product-info">
+                <h1 th:text="${entity.name}"></h1>
+                <section class="product-list">
+                    <div class="product-page-container">
+                        <div class="brand-container">
+                            <div class="brand-title">Brand</div>
+                            <div class="brand" th:text="${entity.brand}"></div>
+                        </div>
+                        <div class="product-container">
+                            <div class="product-title">Product Number</div>
+                            <div class="product-number" th:text="${entity.gtin}"></div>
+                        </div>
+                    </div>
+                </section>
+                <h1>Price</h1>
+                <section class="product-list">
+
+                    <div class="product-page-container">
+                        <!--If original price does not exist than program displays sale price. -->
+                        <div th:if="${entity.prices[1] == 0}" class="vendor-container">
+                            <div class="vendor-title">Original price</div>
+                            <div class="vendor" th:text="${entity.prices[2]} + '€'"></div>
+                        </div>
+                        <!--If original price exists than program displays it and discount of item. -->
+                        <div th:unless="${entity.prices[1] >= 0}"  class="vendor-container">
+                            <div class="vendor-title">Original price</div>
+                            <div class="vendor price-origin" th:text="${entity.prices[1]} + '€'"></div>
+                        </div>
+                        <div th:unless="${entity.prices[1] >= 0}" class="vendor-container">
+                            <div class="vendor-title">Sale price</div>
+                            <div class="vendor" th:text="${entity.prices[2]} + '€'"></div>
+                        </div>
+                        <div class="vendor-container">
+                            <div class="vendor-title stock-title" th:if="${entity.inStock}">In Stock</div>
+                            <div class="vendor-title stock-title" th:unless="${entity.inStock}">Out Stock</div>
+                        </div>
+                        <th:block sec:authorize="hasAnyAuthority('CUSTOMER')">
+                            <form id="add-item-form" th:action="@{/order/add-item}" method="get"
+                                  onsubmit="return validateForm()">
+                                <div class="quantity-wrapper">
+                                    <input type="hidden" id="item_id" name="id" th:value="${entity.id}">
+                                    <input type="number" value="1" max="99999" id="amount" name="amount" class="quantity"
+                                           placeholder="Quantity" required>
+                                </div>
+                                <button class="add-cart" type="submit">Add to cart</button>
+                            </form>
+                            <script>
+                                function validateForm() {
+                                    let amount = document.getElementById("amount").value;
+                                    if (amount <= 0) {
+                                        alert("Please enter a valid quantity.");
+                                        return false;
+                                    }
+                                    return true;
+                                }
+                            </script>
+                        </th:block>
+
+                    </div>
+                </section>
+            </div>
+
+        </div>
+        <div class="details-table" th:if="${entity.characteristics != null}">
+            <p class="all-products">Details</p>
+            <table>
+                <tr th:each="entry : ${entity.characteristics}">
+                    <td class="label" th:text="${entry.key}"></td>
+                    <td class="value product-details-url" th:text="${entry.value}"></td>
+                </tr>
+            </table>
+        </div>
+        <p class="all-products">You May Also Like:</p>
+        <div class="related-products">
+            <div th:each="item : ${randoms}" class="product-card">
+                <a th:href="'/item?id=' + ${item.id}">
+                    <img th:src="@{${item.image}}" alt="Product Image">
+                </a>
+                    <p th:text="'Brand: ' + ${item.brand}"></p>
+                    <p th:text="${item.name}"></p>
+                    <div>
+                        <p class="price" th:text="${item.salePrice} + '€'"></p>
+<!--                        <a th:href="@{/item(id=${item.id})}" class="shop-now-button">View Item</a>-->
+                    </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+</script>
+
+</body>
+</html>

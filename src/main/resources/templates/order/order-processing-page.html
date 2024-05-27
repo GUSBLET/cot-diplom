@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="content(entity, update)">
+    <div class="main-container">
+        <div class="product-manage-grid-container">
+            <div class="product-manage-left-section">
+                <div>
+                    <h2>Order #<span th:text="${entity.id}"></span></h2>
+                    <p>Ordered on <span th:text="${entity.creationTime.toLocalDate()}"></span></p>
+                </div>
+                <form action="/admin/order/process-order" method="post">
+                    <input th:value="${update.id}" name="id" type="hidden">
+                    <div class="product-manage-input-container">
+                        <label for="arrival-date">Arrival date</label>
+                        <input type="date"  th:value="${update.arrivalDate != null ? update.arrivalDate : ''}" id="arrival-date" name="arrivalDate" class="flatpickr-input">
+                    </div>
+                    <div class="product-manage-input-container">
+                        <label for="total-price">Total price</label>
+                        <input type="text" id="total-price"   th:placeholder="${update.commonPrice} + '€'" name="commonPrice" readonly>
+                    </div>
+                    <div class="product-manage-input-container">
+                        <label for="final-price">Final price</label>
+                        <input type="text" th:value="${update.finalPrice}" name="finalPrice" id="final-price">
+                    </div>
+                    <script>
+                        let finalPriceElement = document.getElementById('final-price');
+
+                        finalPriceElement.addEventListener('input', function(event) {
+                            let finalPriceValue = event.target.value;
+                            let sanitizedValue = finalPriceValue.replace(/[^\d.,]/g, '');
+                            sanitizedValue = sanitizedValue.replace(/([.,].*)[.,]/g, '$1');
+                            sanitizedValue = sanitizedValue.replace(',','.');
+                            event.target.value = sanitizedValue;
+                        });
+                    </script>
+                    <div class="product-manage-input-container">
+                        <label for="status">Status</label>
+                        <select id="status" name="status" >
+                            <option value="">Select a status</option>
+                            <option th:each="type : ${T(com.web.shop.qogita.order.OrderStatus).values()}"
+                                    th:value="${type}" th:text="${type.getDisplayName()}"
+                                    th:selected="${type == update.status}"
+                            ></option>
+                        </select>
+                    </div>
+                    <div class="product-manage-button-container">
+                        <button type="submit">Save</button>
+                    </div>
+                </form>
+            </div>
+            <div class="product-manage-right-section">
+                <h2>Product</h2>
+                <div class="product-manage-item-card-container" th:each="item : ${entity.products}">
+                    <div class="product-manage-card" >
+                        <a th:href="'/item?id=' + ${item.productId}"><img th:src="${item.image}" alt="Product Image" class="product-image-card"></a>
+                        <div class="product-card-description">
+                            <p class="product-name" th:text="${item.name}"></p>
+                            <div class="decoration-text">
+                                <p class="gtin-number">GTIN: <span th:text="${item.gtin}"></span></p>
+                                <p class="gtin-number">Vendor: <span th:text="${item.vendor}"></span></p>
+                                <p class="price-cart" th:text="${item.price} + '€'"></p>
+                                <p class="quantity-text">Quantity: <span th:text="${item.amount}"></span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+<!--                <div>-->
+<!--                    <h2>Shipping address</h2>-->
+<!--                    <p>123 Shipping Address Street,</p>-->
+<!--                    <p>City, State, Zip Code</p>-->
+<!--                </div>-->
+                <div>
+                    <h2>Email</h2>
+                    <p th:text="${entity.email}"></p>
+                </div>
+                <div>
+                    <h2>Status</h2>
+                    <div class="product-manage-item-card-container-status">
+                        <div class="product-manage-card">
+                            <div class="order-history-img-container">
+                                <img src="/img/order_history.png" alt="Product Image" class="order-history-img">
+                            </div>
+                            <div class="cart-description">
+                                <p class="product-name" th:text="${entity.status.getDisplayName()}"></p>
+                                <div class="decoration-text">
+                                    <p th:unless="${entity.arrivingTime == null}"  class="price-cart order-history-description">Arrives <span th:text="${entity.arrivingTime.toLocalDate()}"></span></p>
+                                    <p th:if="${entity.arrivingTime == null}"  class="price-cart order-history-description">Arrival time unknown</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div th:fragment="content()" class="navbar">
+        <div class="logo-mobile">
+            <div class="logo-img-text-mobile">
+                <img src="/img/GTSShopLogoCorBlack.png" alt="logo">
+            </div>
+        </div>
+
+<!--        <div class="logo-mobile">-->
+<!--            <div class="search-mobile-container">-->
+<!--                <button class="cart-button mobile-button search-mobile-button">-->
+<!--                    <img src="/img/search.png" alt="search-icon">-->
+<!--                </button>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="search-menu" id="search_menu">-->
+<!--            <div class="sort-by-container">-->
+<!--                <div class="checkbox-group">-->
+<!--                    <div class="search-responsive-menu">-->
+<!--                        <img src="/img/search.png" onclick="filterShowcase()" alt="search-icon">-->
+<!--                        <input onkeypress="handleKeyPress(event)" oninput="searchLineMobileUpdate()" id="search-input-mobile" type="text" placeholder="Search...">-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="black-back"></div>-->
+
+
+        <div class="logo">
+            <div class="logo-img-text">
+                <a href="/">
+                    <img  src="/img/GTSShopLogoCorBlack.png" alt="logo">
+                </a>
+            </div>
+            <div class="search">
+                <img src="/img/search.png"  onclick="filterShowcase()" alt="search-icon">
+                    <input onkeypress="handleKeyPress(event)" oninput="searchLineUpdate()" type="text" id="search-line" name="searchLine" placeholder="Search...">
+            </div>
+        </div>
+        <div class="top-button">
+            <th:block sec:authorize="isAuthenticated()">
+                <button class="cart-button mobile-button">
+                    <a href="/">
+                        <img src="/img/home.svg" alt="cart-button">
+                    </a>
+                </button>
+<!--                <button  class="cart-button mobile-button-filter">-->
+<!--                    <img src="/img/funnel.svg" alt="cart-button">-->
+<!--                </button>-->
+            </th:block>
+
+            <th:block sec:authorize="hasAnyAuthority('ADMIN')">
+                <button class="cart-button">
+                    <a th:href="@{/admin/order/orders-panel}"> <img src="/img/cart.svg" alt="cart-button"></a>
+                </button>
+                <div class="dropdown">
+                    <ul class="dropdown__items">
+                        <li><img src="/img/person-plus.svg" alt="Setting" class="dropdown-icon"><a
+                                th:href="@{/account/admin/registration}">Create user</a></li>
+                        <li><img src="/img/logout.svg" alt="LogOut" class="dropdown-icon"><a href="/account/logout">LogOut</a>
+                        </li>
+                    </ul>
+                </div>
+            </th:block>
+
+            <th:block sec:authorize="hasAnyAuthority('CUSTOMER')">
+                <button class="cart-button">
+                    <a th:href="@{/order/basket}"> <img src="/img/cart.svg" alt="cart-button"></a>
+                </button>
+                <div class="dropdown">
+                    <ul class="dropdown__items">
+                        <li><img src="/img/box-seam.svg" alt="Setting" class="dropdown-icon"><a href="/order/orders-history">Orders</a></li>
+                        <li><img src="/img/logout.svg" alt="LogOut" class="dropdown-icon"><a href="/account/logout">LogOut</a>
+                        </li>
+                    </ul>
+                </div>
+            </th:block>
+
+
+            <th:block sec:authorize="isAuthenticated()">
+                <button class="like-button cart-button">
+                    <img src="/img/account.svg" alt="like-button">
+                </button>
+            </th:block>
+
+        </div>
+
+        <th:block sec:authorize="!isAuthenticated()">
+            <div class="sign-up">
+                <button class="login"><a href="/account/login-page">Sign In</a></button>
+            </div>
+        </th:block>
+    </div>
+</body>
+</html>
